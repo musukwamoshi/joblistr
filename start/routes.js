@@ -18,4 +18,26 @@ const Route = use('Route')
 
 //Route.on('/').render('welcome')
 
-Route.on('/').render('index')
+//Route.on('/').render('index')
+
+Route.get('/', 'JobController.home');
+
+Route.on('/signup').render('auth.signup');
+Route.on('/login').render('auth.login');
+Route.post('/signup', 'UserController.create').validator('CreateUser');
+
+Route.post('/login', 'UserController.login').validator('LoginUser');
+
+Route.get('/logout', async({ auth, response }) => {
+    await auth.logout();
+    return response.redirect('/');
+});
+
+
+Route.get('/post-a-job', 'JobController.userIndex');
+
+Route.group(() => {
+    Route.get('/delete/:id', 'JobController.delete');
+    Route.get('/edit/:id', 'JobController.edit');
+    Route.post('/update/:id', 'JobController.update').validator('CreateJob');
+}).prefix('/post-a-job');
